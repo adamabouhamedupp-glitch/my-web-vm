@@ -1,44 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>System Terminal</title>
+    <title>System Root Terminal</title>
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; text-align: center; margin: 0; }
-        #screen_container { margin-top: 50px; display: inline-block; border: 2px solid #333; }
-        canvas { display: block; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; line-height: 1.5; }
+        #terminal { max-width: 800px; margin: auto; text-align: left; }
+        .input-line { display: flex; }
+        .prompt { color: #55ff55; margin-right: 10px; }
+        input { background: transparent; border: none; color: #0f0; font-family: inherit; font-size: inherit; outline: none; flex: 1; }
+        .history { white-space: pre-wrap; margin-bottom: 10px; }
+        .glitch { animation: glitch 1s linear infinite; }
+        @keyframes glitch { 2% { color: #fff; } 4% { color: #0f0; } }
     </style>
 </head>
 <body>
-    <h2>Terminal Online</h2>
-    <div id="screen_container">
-        <div style="white-space: pre; font-family: Courier, monospace;"></div>
-        <canvas></canvas>
+    <div id="terminal">
+        <div class="glitch">** ACCESS GRANTED: SYSTEM ROOT v4.02 **</div>
+        <div>Type 'help' for a list of commands.</div>
+        <br>
+        <div id="history" class="history"></div>
+        <div class="input-line">
+            <span class="prompt">root@system:~$</span>
+            <input type="text" id="commandInput" autofocus>
+        </div>
     </div>
 
-    <script src="https://unpkg.com/v86@0.10.2/build/libv86.js"></script>
-
     <script>
-        window.onload = function() {
-            var check = setInterval(function() {
-                if (typeof V86Starter !== 'undefined') {
-                    clearInterval(check);
-                    startVM();
-                }
-            }, 100);
+        const history = document.getElementById('history');
+        const input = document.getElementById('commandInput');
 
-            function startVM() {
-                new V86Starter({
-                    wasm_path: "https://unpkg.com/v86@0.10.2/build/v86.wasm",
-                    memory_size: 32 * 1024 * 1024,
-                    vga_memory_size: 2 * 1024 * 1024,
-                    screen_container: document.getElementById("screen_container"),
-                    bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/seabios.bin" },
-                    vga_bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/vgabios.bin" },
-                    cdrom: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/images/linux.iso" },
-                    autostart: true,
-                });
-            }
+        const commands = {
+            'help': "Available commands: help, clear, whoami, ls, hack, system_info",
+            'whoami': "Current User: root\nPermissions: Administrator",
+            'ls': "bin/  dev/  etc/  home/  root/  usr/  secret_data.txt",
+            'system_info': "OS: StealthOS v1.0\nCPU: Virtualized 8-Core\nMemory: 64GB Virtual RAM",
+            'hack': "Scanning local network...\n[##########] 100%\nAccessing school server... \nERROR: Encryption too strong. Try again later.",
+            'clear': ""
         };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const fullCmd = input.value.toLowerCase().trim();
+                if (fullCmd === 'clear') {
+                    history.innerHTML = "";
+                } else {
+                    const response = commands[fullCmd] || "Command not found: " + fullCmd;
+                    history.innerHTML += `<div><span style="color:#55ff55">root@system:~$</span> ${input.value}</div>`;
+                    history.innerHTML += `<div>${response}</div><br>`;
+                }
+                input.value = "";
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        // Keep input focused
+        document.addEventListener('click', () => input.focus());
     </script>
 </body>
 </html>
