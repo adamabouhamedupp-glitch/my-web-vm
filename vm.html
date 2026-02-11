@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Stealth VM</title>
+    <title>Stealth VM</title>
     <style>
         body { background: #000; color: #0f0; font-family: monospace; text-align: center; margin: 0; }
-        #screen_container { margin-top: 50px; display: inline-block; border: 2px solid #333; background: #000; }
+        #screen_container { margin-top: 50px; display: inline-block; border: 2px solid #333; }
         canvas { display: block; }
     </style>
 </head>
 <body>
-    <h2>Stealth Terminal</h2>
-    <p>Connecting to internal engine...</p>
-
+    <h2>System Terminal</h2>
     <div id="screen_container">
         <div style="white-space: pre; font-family: Courier, monospace;"></div>
         <canvas></canvas>
     </div>
 
-    <script>
-        var script = document.createElement('script');
-        // This is a special 'ESM' version that sometimes slips past filters
-        script.src = 'https://esm.sh/v86@0.10.2';
-        script.onload = function() {
-            console.log("Engine loaded successfully!");
-            startVM();
-        };
-        script.onerror = function() {
-            document.body.innerHTML = "<h1>Blocked by School Filter</h1><p>The school is blocking the VM library. We need to try the 'Full Paste' method next.</p>";
-        };
-        document.head.appendChild(script);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/v86/0.10.2/libv86.js"></script>
 
-        function startVM() {
-            var emulator = new V86Starter({
-                wasm_path: "https://cdn.jsdelivr.net/npm/v86@0.10.2/build/v86.wasm",
+    <script>
+        window.onload = function() {
+            if (typeof V86Starter === 'undefined') {
+                document.body.innerHTML = "<h2>Still Blocked</h2><p>Your school is blocking Cloudflare. I will provide the 'Gigantic Paste' code next.</p>";
+                return;
+            }
+
+            new V86Starter({
+                wasm_path: "https://cdnjs.cloudflare.com/ajax/libs/v86/0.10.2/v86.wasm",
                 memory_size: 32 * 1024 * 1024,
                 vga_memory_size: 2 * 1024 * 1024,
                 screen_container: document.getElementById("screen_container"),
-                bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/seabios.bin" },
-                vga_bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/vgabios.bin" },
-                cdrom: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/images/linux.iso" },
+                bios: { url: "https://raw.githack.com/copy/v86/master/bios/seabios.bin" },
+                vga_bios: { url: "https://raw.githack.com/copy/v86/master/bios/vgabios.bin" },
+                cdrom: { url: "https://raw.githack.com/copy/v86/master/images/linux.iso" },
                 autostart: true,
             });
-        }
+        };
     </script>
 </body>
 </html>
