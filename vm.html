@@ -3,25 +3,25 @@
 <head>
     <title>System Root Terminal</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; line-height: 1.5; }
-        #terminal { max-width: 800px; margin: auto; text-align: left; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; line-height: 1.5; overflow: hidden; }
+        #terminal { max-width: 900px; margin: auto; text-align: left; height: 90vh; display: flex; flex-direction: column; }
         .input-line { display: flex; }
-        .prompt { color: #55ff55; margin-right: 10px; }
+        .prompt { color: #55ff55; margin-right: 10px; font-weight: bold; }
         input { background: transparent; border: none; color: #0f0; font-family: inherit; font-size: inherit; outline: none; flex: 1; }
-        .history { white-space: pre-wrap; margin-bottom: 10px; }
-        .glitch { animation: glitch 1s linear infinite; }
-        @keyframes glitch { 2% { color: #fff; } 4% { color: #0f0; } }
+        #history { white-space: pre-wrap; flex-grow: 1; overflow-y: auto; margin-bottom: 10px; }
+        .glitch { animation: glitch 1s linear infinite; font-weight: bold; color: #fff; }
+        @keyframes glitch { 2% { color: #f00; } 4% { color: #0f0; } 6% { color: #00f; } }
     </style>
 </head>
 <body>
     <div id="terminal">
-        <div class="glitch">** ACCESS GRANTED: SYSTEM ROOT v4.02 **</div>
-        <div>Type 'help' for a list of commands.</div>
+        <div class="glitch">** SYSTEM OVERRIDE: KERNEL v4.02-STABLE **</div>
+        <div>Type 'help' to see available system commands.</div>
         <br>
-        <div id="history" class="history"></div>
+        <div id="history"></div>
         <div class="input-line">
-            <span class="prompt">root@system:~$</span>
-            <input type="text" id="commandInput" autofocus>
+            <span class="prompt">root@stealth-vm:~$</span>
+            <input type="text" id="commandInput" autofocus autocomplete="off">
         </div>
     </div>
 
@@ -30,11 +30,11 @@
         const input = document.getElementById('commandInput');
 
         const commands = {
-            'help': "Available commands: help, clear, whoami, ls, hack, system_info",
-            'whoami': "Current User: root\nPermissions: Administrator",
-            'ls': "bin/  dev/  etc/  home/  root/  usr/  secret_data.txt",
-            'system_info': "OS: StealthOS v1.0\nCPU: Virtualized 8-Core\nMemory: 64GB Virtual RAM",
-            'hack': "Scanning local network...\n[##########] 100%\nAccessing school server... \nERROR: Encryption too strong. Try again later.",
+            'help': "Available commands:\n > help       - Show this menu\n > whoami     - Display user info\n > ls         - List directory files\n > hack       - Initialize network scan\n > sysinfo    - Hardware diagnostics\n > clear      - Reset terminal screen",
+            'whoami': "USER: root\nUID: 0\nLEVEL: Superuser (Unrestricted)",
+            'ls': "total 42\ndrwxr-xr-x  2 root root  4096 Feb 11 09:43 .\ndrwxr-xr-x 20 root root  4096 Feb 11 09:43 ..\n-rw-r--r--  1 root root   102 Feb 11 09:44 secret_passwords.txt\n-rwxr-xr-x  1 root root 20480 Feb 11 09:45 network_crack.sh",
+            'sysinfo': "OS: StealthOS v1.4.2\nKERNEL: x86_64 Linux 6.1.0\nRAM: 32768MB\nUptime: 0d 0h 14m",
+            'hack': "INITIALIZING GAIA PROTOCOL...\n[||........] 20%\n[||||||....] 60%\n[||||||||||] 100%\nCONNECTION ESTABLISHED.\nWARNING: Firewall active. Deploying stealth packet...",
             'clear': ""
         };
 
@@ -43,17 +43,17 @@
                 const fullCmd = input.value.toLowerCase().trim();
                 if (fullCmd === 'clear') {
                     history.innerHTML = "";
-                } else {
-                    const response = commands[fullCmd] || "Command not found: " + fullCmd;
-                    history.innerHTML += `<div><span style="color:#55ff55">root@system:~$</span> ${input.value}</div>`;
-                    history.innerHTML += `<div>${response}</div><br>`;
+                } else if (fullCmd !== "") {
+                    const response = commands[fullCmd] || "Error: Command '" + fullCmd + "' not recognized by kernel.";
+                    history.innerHTML += `<div><span style="color:#55ff55">root@stealth-vm:~$</span> ${input.value}</div>`;
+                    history.innerHTML += `<div style="margin-bottom:10px">${response}</div>`;
                 }
                 input.value = "";
-                window.scrollTo(0, document.body.scrollHeight);
+                history.scrollTop = history.scrollHeight;
             }
         });
 
-        // Keep input focused
+        // Autofocus input
         document.addEventListener('click', () => input.focus());
     </script>
 </body>
