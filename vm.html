@@ -1,38 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Secret VM</title>
-    <style>
-        body { background: #000; color: #0f0; font-family: monospace; text-align: center; margin: 0; }
-        #screen_container { margin-top: 50px; display: inline-block; border: 2px solid #333; }
-        canvas { display: block; }
-    </style>
-</head>
-<body>
-    <h2>Browser VM Terminal</h2>
-    <p>Wait for "Booting from CD-ROM" to appear...</p>
+<script src="https://cdn.jsdelivr.net/npm/v86@0.10.2/build/libv86.js"></script>
 
-    <div id="screen_container">
-        <div style="white-space: pre; font-family: Courier, monospace;"></div>
-        <canvas></canvas>
-    </div>
-
-    <script src="https://copy.sh/v86/build/libv86.js"></script>
-
-    <script>
-    window.onload = function() {
-        var emulator = new V86Starter({
-            wasm_path: "https://copy.sh/v86/build/v86.wasm",
-            memory_size: 32 * 1024 * 1024,
-            vga_memory_size: 2 * 1024 * 1024,
-            screen_container: document.getElementById("screen_container"),
-            bios: { url: "https://copy.sh/v86/bios/seabios.bin" },
-            vga_bios: { url: "https://copy.sh/v86/bios/vgabios.bin" },
-            // This loads a tiny version of Linux automatically
-            cdrom: { url: "https://copy.sh/v86/images/linux.iso" },
-            autostart: true,
-        });
-    };
-    </script>
-</body>
-</html>
+<script>
+window.onload = function() {
+    var emulator = new V86Starter({
+        // This is a "mirrored" WASM file
+        wasm_path: "https://cdn.jsdelivr.net/npm/v86@0.10.2/build/v86.wasm",
+        memory_size: 32 * 1024 * 1024,
+        vga_memory_size: 2 * 1024 * 1024,
+        screen_container: document.getElementById("screen_container"),
+        bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/seabios.bin" },
+        vga_bios: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/bios/vgabios.bin" },
+        cdrom: { url: "https://cdn.jsdelivr.net/gh/copy/v86@master/images/linux.iso" },
+        autostart: true,
+    });
+};
+</script>
